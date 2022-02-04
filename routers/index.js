@@ -62,7 +62,6 @@ router.get('/captcha', (req, res) => {
   res.status(200).send(captcha.data);
 });
 
-
 //! ----------------接受头像-----------
 const path = require('path')
 const fs = require('fs')
@@ -80,7 +79,39 @@ function getNumber() {
   }
   return number_id
 }
-
+router.post("/enroll", (req, res) => {
+  uploadSingle(req, res, function (err) {
+    const {
+      username,
+      password,
+      signaturePerson
+    } = req.body
+    const userPhotoImg = req.files[0].buffer
+    const Imgbase64 = userPhotoImg.toString("base64")
+    const userPhohobase64 = "data:image/jpeg;base64," + Imgbase64
+    numberid = getNumber()
+    users_model.findOne({ username })
+      .then((state) => {
+        if (state) {
+          return res.send({ status: 201, msg: "该用户已被注册，请前往登录" })
+        } else {
+          users_model.create({
+            username: username,
+            password: md5(password),
+            number_id: numberid,
+            signaturePerson: signaturePerson,
+            userPhoto: userPhohobase64
+          }).then((state) => {
+            if (state) {
+              return res.send({ status: 200, msg: "创建用户成功" })
+            } else {
+              return res.send({ status: 201, msg: "创建用户失败" })
+            }
+          })
+        }
+      })
+  })
+})
 
 //! ----------------登录-------------
 router.post('/login', (req, res) => {
