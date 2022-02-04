@@ -6,22 +6,12 @@ const path = require('path')
 const fs = require('fs')
 
 const dirPath = path.join(__dirname, '..', 'public/upload')
+console.log(dirPath);
 
 const storage = multer.diskStorage({
   // destination: 'upload', //string时,服务启动将会自动创建文件夹
   destination: function (req, file, cb) { //函数需手动创建文件夹
-    // console.log('destination()', file)
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdir(dirPath, function (err) {
-        if (err) {
-          console.log(err)
-        } else {
-          cb(null, dirPath)
-        }
-      })
-    } else {
-      cb(null, dirPath)
-    }
+    cb(null, dirPath)
   },
   filename: function (req, file, cb) {
     // console.log('filename()', file)
@@ -29,7 +19,7 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + Date.now() + ext)
   }
 })
-const upload = multer({storage})
+const upload = multer({ storage })
 const uploadSingle = upload.single('image')
 
 module.exports = function (router) {
@@ -57,7 +47,7 @@ module.exports = function (router) {
 
   // 删除图片
   router.post('/manage/img/delete', (req, res) => {
-    const {name} = req.body
+    const { name } = req.body
     fs.unlink(path.join(dirPath, name), (err) => {
       if (err) {
         console.log(err)
