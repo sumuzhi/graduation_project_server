@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   signaturePerson: { type: String }, // 个性签名
   friend_list: [], // 好友列表
   friend_list_pre: [], // 申请好友列表
+  friend_list_send:[],//发送申请后,将申请的好友暂时放在这
   create_time: { type: Number, default: Date.now }
 })
 // username password userPhoto number_id signaturePerson
