@@ -1,7 +1,7 @@
 const random = require("string-random") //用来生成qq号
 const multer = require('multer')
 const md5 = require('blueimp-md5')
-
+const uuid = require('uuid')
 const users_model = require("../models/users_model")
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
@@ -16,8 +16,8 @@ function getNumber() {
   return number_id
 }
 
-
 module.exports = function (router) {
+
   router.post("/enroll", (req, res) => {
     uploadSingle(req, res, function (err) {
       const {
@@ -51,8 +51,9 @@ module.exports = function (router) {
             }
           })
       } catch {
-        res.send({status:202,msg:"检测到不合法的数据请求"})
+        res.send({ status: 202, msg: "检测到不合法的数据请求" })
       }
     })
   })
+
 }

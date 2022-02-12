@@ -1,5 +1,4 @@
 const users_model = require("../models/users_model")
-
 //得到好友列表
 async function getfriendsList(username, number_id) {
   try {
@@ -34,7 +33,6 @@ async function addSendList(username, number_id, apply_name) {
   } catch { }
 }
 
-
 //操作用户申请列表---对接收方(自己)---右侧申请模块
 async function updateUserPreList(username, number_id, apply_name) {
   try {
@@ -59,6 +57,28 @@ async function updateUserSendList(username, apply_id, apply_name) {
   } catch { }
 }
 
+//删除好友
+async function deleteFriend(host_name, host_id, apply_name, apply_id) {
+  try {
+    //先删除host中friendList中的appl
+    let delete_host = await users_model.updateOne({ username: host_name, number_id: host_id }, {
+      $pull: { friend_list: apply_name }
+    }).then((result) => {
+      console.log(67);
+      return result
+    })
+    //删除apply_name中的host_name
+    let delete_apply = await users_model.updateOne({ username: apply_name, number_id: apply_id }, {
+      $pull: { friend_list: host_name }
+    }).then((result1) => {
+      console.log(73);
+      return result1
+    })
+    console.log(76);
+    return { delete_host, delete_apply }
+  } catch { }
+}
+
 module.exports = function (router) {
 
   //好友列表
@@ -69,11 +89,13 @@ module.exports = function (router) {
         number_id,
       } = req.body
       getfriendsList(username, number_id).then((list) => {
-        list = list["friend_list"]
-        users_model.find({ username: { $in: list } }, { username: 1, number_id: 1, userPhoto: 1, _id: 0 })
-          .then((data) => {
-            return res.send({ status: 200, data: data })
-          })
+        try {
+          list = list["friend_list"]
+          users_model.find({ username: { $in: list } }, { username: 1, number_id: 1, userPhoto: 1, signaturePerson: 1, _id: 0 })
+            .then((data) => {
+              return res.send({ status: 200, data: data })
+            })
+        } catch { }
       })
     } catch { }
   })
@@ -173,4 +195,25 @@ module.exports = function (router) {
       })
     } catch { }
   })
+
+  //删除好友
+  router.post("/delete_friend", (req, res) => {
+    const {
+      host_name,
+      host_id,
+      apply_name,
+      apply_id
+    } = req.body
+    console.log(host_name, host_id, apply_id, apply_name);
+    let state = deleteFriend(host_name, host_id, apply_name, apply_id)
+    // console.log(delete_host);
+    state.then((result) => {
+      const { delete_apply, delete_host } = result
+      if (delete_host.acknowledged && delete_apply.acknowledged)
+        return res.send({ status: 200, msg: "删除成功" })
+      else
+        return res.send({ status: 201, msg: "删除失败" })
+    })
+  })
+
 }

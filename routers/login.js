@@ -1,5 +1,4 @@
 const md5 = require('blueimp-md5')
-
 const svgCaptcha = require('svg-captcha');
 const users_model = require("../models/users_model")
 
@@ -18,17 +17,13 @@ function createVerifyImg() {
   console.log(codeAns);
   return captcha
 }
-
-
-//登录路由
 module.exports = function (router) {
-
+  //登录路由
   router.get('/captcha', (req, res) => {
     captcha = createVerifyImg()
     res.type('svg');
     res.status(200).send(captcha.data);
   });
-
 
   router.post('/login', (req, res) => {
     const {
@@ -67,4 +62,5 @@ module.exports = function (router) {
       createVerifyImg()
     } catch { }
   })
+
 }
