@@ -13,5 +13,6 @@ require('./login')(router)
 require('./friend')(router)
 require('./conversations')(router)
 require('./messages')(router)
+require('./recorder')(router)
 
 module.exports = router;

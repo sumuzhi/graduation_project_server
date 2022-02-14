@@ -41,7 +41,6 @@ module.exports = function (server) {
       removeUser(socket.id) 
       console.log(users);
     })
- 
   })
 
 } 
