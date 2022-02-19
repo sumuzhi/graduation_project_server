@@ -12,7 +12,7 @@ module.exports = function (router) {
   })
 
   router.get("/messages/:conversationId", async (req, res) => {
-    console.log(15,req.params);
+    console.log(15, req.params);
     try {
       let aaa = await message_model.find({
         conversation_id: req.params.conversationId

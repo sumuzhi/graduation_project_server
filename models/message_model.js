@@ -4,10 +4,11 @@ const mongoose = require('mongoose')
 const messageSchema = new mongoose.Schema({
   content: { type: String, required: true }, // 发送内容
   recorder: { type: Buffer, required: false },
+  duration: { type: String },
   isRecorder: { type: Boolean, default: false },
   sender: { type: String },//发送方id   
   conversation_id: { type: String, require: true },//会话id
-  create_time: { type: Number, default: Date.now }
+  create_time: { type: Number, default: Date.now },
 })
 
 // 4. 向外暴露Model

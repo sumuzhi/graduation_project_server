@@ -14,5 +14,6 @@ require('./friend')(router)
 require('./conversations')(router)
 require('./messages')(router)
 require('./recorder')(router)
+require('./upload_file')(router)
 
 module.exports = router;

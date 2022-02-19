@@ -17,7 +17,7 @@ module.exports = function (server) {
 
     const user = { socket_id: socket.id, user_id: socket.handshake.query.id }
     addUser(user)
-    console.log("+++++++++++");
+    console.log("+++++++++++当前连接的用户列表+++++++");
     console.log(users);
 
     io.emit("getSocketId", { user })
