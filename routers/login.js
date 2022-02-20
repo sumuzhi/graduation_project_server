@@ -47,7 +47,8 @@ module.exports = function (router) {
                 let userInfo = {
                   username: state.username,
                   number_id: state.number_id,
-                  userPhotoBase64: state.userPhoto
+                  userPhotoBase64: state.userPhoto,
+                  signaturePerson: state.signaturePerson
                 }
                 res.send({ status: 200, msg: "登录成功", data: userInfo })
                 // 调用friends表的方法，将注册的用户生成相应的friend

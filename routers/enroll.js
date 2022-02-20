@@ -56,4 +56,62 @@ module.exports = function (router) {
     })
   })
 
+  router.post('/update_userPhoto', (req, res) => {
+    uploadSingle(req, res, function (err) {
+      const {
+        username,
+        number_id,
+      } = req.body
+      try {
+        const userPhotoImg = req.files[0].buffer
+        const Imgbase64 = userPhotoImg.toString("base64")
+        const userPhohobase64 = "data:image/jpeg;base64," + Imgbase64
+        users_model.findOneAndUpdate({ username, number_id }, { userPhoto: userPhohobase64 }, { new: true })
+          .then((state) => {
+            if (state !== null) {
+              const {
+                username,
+                number_id,
+                signaturePerson,
+                userPhoto
+              } = state
+              return res.send({ status: 200, data: { username, number_id, signaturePerson, userPhoto } })
+            }
+          })
+      } catch {
+        res.send({ status: 202, msg: "检测到不合法的数据请求" })
+      }
+    })
+  })
+
+  router.post('/update_userInfo', async (req, res) => {
+    const {
+      username,
+      username_update,
+      number_id,
+      signaturePerson,
+      signaturePerson_update,
+    } = req.body
+    console.log(95, req.body);
+
+    let findusername = await users_model.findOne({ username: username_update })
+    console.log(findusername);
+    if (findusername == null || findusername.number_id == number_id) { //该用户名未注册,或没有修改用户名
+      users_model.findOneAndUpdate({ username, number_id }, { username: username_update, signaturePerson: signaturePerson_update }, { new: true })
+        .then((state) => {
+          if (state !== null) {
+            const {
+              username,
+              number_id,
+              signaturePerson,
+              userPhoto
+            } = state
+            return res.send({ status: 200, data: { username, number_id, signaturePerson, userPhoto } })
+          }
+        })
+    }
+    else if (findusername.number_id != number_id) //该用户已存在
+      return res.send({ status: 201, msg: "该用户名已存在" })
+  })
+
 }
